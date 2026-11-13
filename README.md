@@ -1,4 +1,4 @@
-#Sistema Policlínico
+# Sistema Policlínico
 
 Policlínico pequeño: historias clínicas, citas y tratamientos. Tiene una jerarquía natural de herencia (Paciente adulto/niño, distintos tipos de tratamiento). 
 
