@@ -29,10 +29,10 @@ Este proyecto propone un software que digitaliza esa gestión, aplicando múltip
 - RF-07 Proteger datos sensibles (DNI, teléfono) sin mostrarlos en texto plano.
 
 ## Equipo
-- Franco Rol:?
-- Christian Rol:?
-- Bianca Rol:?
-- Jose Rol:?
+- Franco Rol: Programación
+- Christian Rol: Conclusiones y diagrama (Etapa 3-6)
+- Bianca Rol: Word
+- Jose Rol: PPT
 
 ## Restricciones de diseño
 
