@@ -4,62 +4,50 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Representa una reserva de atención médica en el policlínico, registrando qué
- * paciente será atendido, por qué médico y en qué fecha y hora exacta.
+ * Representa una reserva de atención médica: qué paciente será atendido,
+ * por qué médico y en qué fecha y hora.
  *
- * Validaciones: Al crearse, exige que el nombre del médico y del paciente no
- * sean nulos ni estén en blanco, y que la fecha y hora sean obligatorias; de lo
- * contrario, impide crear el objeto.
+ * Validaciones: el médico no puede ser nulo ni estar en blanco, y el paciente
+ * y la fecha y hora son obligatorios.
  *
- * Propiedad de la clase: Es inmutable; Una vez creada la cita, sus datos solo
- * se pueden leer (con los métodos get) y no se pueden cambiar, lo que evita que
- * se alteren por error.
+ * Los atributos son privados y finales, y no hay setters: una cita no se
+ * modifica, se reprograma creando una nueva desde el gestor.
  */
 public class Cita {
-
-    private final String medico;
-    private final String paciente;
-    private final LocalDateTime fechaHora;
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    private final String medico;
+    private final Paciente paciente;
+    private final LocalDateTime fechaHora;
+
     /**
-     * Crea una nueva cita médica validando que todos los datos obligatorios
-     * sean correctos.
+     * Crea una cita validando los datos obligatorios.
      *
-     * @param medico Nombre del médico asignado; no puede ser nulo ni estar en
-     * blanco.
-     * @param paciente Nombre del paciente que asistirá; no puede ser nulo ni
-     * estar en blanco.
-     * @param fechaHora Fecha y hora programada para la cita; no puede ser nula.
-     * @throws IllegalArgumentException Si el médico o el paciente son nulos o
-     * están en blanco, o si la fecha y hora son nulas.
-     *
+     * @param medico nombre del médico; no puede ser nulo ni estar en blanco
+     * @param paciente paciente que será atendido; no puede ser nulo
+     * @param fechaHora fecha y hora de la cita; no puede ser nula
+     * @throws IllegalArgumentException si algún dato no cumple lo anterior
      */
-    public Cita(String medico, String paciente, LocalDateTime fechaHora) {
-        // Validar que medico y paciente no sean null ni estén vacíos (o solo espacios)
+    public Cita(String medico, Paciente paciente, LocalDateTime fechaHora) {
         if (medico == null || medico.isBlank()) {
             throw new IllegalArgumentException("El nombre del médico no puede estar vacío.");
         }
-        if (paciente == null || paciente.isBlank()) {
-            throw new IllegalArgumentException("El nombre del paciente no puede estar vacío.");
+        if (paciente == null) {
+            throw new IllegalArgumentException("La cita debe tener un paciente.");
         }
         if (fechaHora == null) {
             throw new IllegalArgumentException("La fecha y hora de la cita son obligatorias.");
         }
-
-        // Asignar los tres atributos.
-        this.medico = medico;
+        this.medico = medico.trim();
         this.paciente = paciente;
         this.fechaHora = fechaHora;
-
     }
 
-    //Getters de los tres atributos.
     public String getMedico() {
         return medico;
     }
 
-    public String getPaciente() {
+    public Paciente getPaciente() {
         return paciente;
     }
 
@@ -67,9 +55,14 @@ public class Cita {
         return fechaHora;
     }
 
-    @Override
-    public String toString() {
-        return "Cita: " + "Médico: " + medico + " - " + "Paciente: " + paciente + " - " + fechaHora.format(FORMATO);
+    /** Dos citas chocan si son del mismo médico y a la misma fecha y hora. */
+    public boolean chocaCon(Cita otra) {
+        return medico.equalsIgnoreCase(otra.medico) && fechaHora.equals(otra.fechaHora);
     }
 
+    @Override
+    public String toString() {
+        return "Cita - Médico: " + medico + " - Paciente: " + paciente.getNombre()
+                + " - " + fechaHora.format(FORMATO);
+    }
 }
