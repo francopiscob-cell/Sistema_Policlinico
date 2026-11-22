@@ -56,18 +56,18 @@ Este proyecto propone un software que digitaliza esa gestión, aplicando múltip
 * JUnit
 * GitHub
 
-* \## DD-01
-* 
+## DD-01
+
 * Se usarán los paradigmas Orientado a Objetos (POO), Funcional y Orientado a Eventos para desarrollar el módulo del policlínico.
-* 
-* \### Justificación
-* \- \*\*POO:\*\* Se usa en RF-01 (principal), RF-03, RF-04 y RF-07. En la Tabla 2 obtuvo Alto en Encapsulamiento, Mantenibilidad y Reutilización porque protege los datos con atributos privados, permite agregar tratamientos sin cambiar el código base y reutiliza atributos con herencia. El RF-03 se incluye aquí porque registrar una atención médica requiere conectar las clases principales del sistema (como el paciente y su historia clínica).
-* \- \*\*Funcional:\*\* Se usa en RF-05, RF-06 y como apoyo en RF-01 y RF-07. En la Tabla 2 obtuvo Alto en Colecciones y Reutilización porque permite filtrar y transformar datos sin modificar las listas originales. En el código se aplicará con `stream().filter()`, `map()` y lambdas para los reportes, búsquedas y para enmascarar el DNI.
-* \- \*\*Orientado a Eventos:\*\* Se usa en RF-02. En la Tabla 2 obtuvo Alto en Interacción porque responde a lo que hace el usuario sin seguir un orden fijo. En Java Swing se aplicará con `JButton` y `ActionListener` para validar horarios y gestionar citas con un clic.
-* 
-* \### Integración y descarte
+  
+### Justificación
+* **POO:** Se usa en RF-01 (principal), RF-03, RF-04 y RF-07. En la Tabla 2 obtuvo Alto en Encapsulamiento, Mantenibilidad y Reutilización porque protege los datos con atributos privados, permite agregar tratamientos sin cambiar el código base y reutiliza atributos con herencia. El RF-03 se incluye aquí porque registrar una atención médica requiere conectar las clases principales del sistema (como el paciente y su historia clínica).
+* **Funcional:** Se usa en RF-05, RF-06 y como apoyo en RF-01 y RF-07. En la Tabla 2 obtuvo Alto en Colecciones y Reutilización porque permite filtrar y transformar datos sin modificar las listas originales. En el código se aplicará con `stream().filter()`, `map()` y lambdas para los reportes, búsquedas y para enmascarar el DNI.
+* **Orientado a Eventos:** Se usa en RF-02. En la Tabla 2 obtuvo Alto en Interacción porque responde a lo que hace el usuario sin seguir un orden fijo. En Java Swing se aplicará con `JButton` y `ActionListener` para validar horarios y gestionar citas con un clic.
+  
+### Integración y descarte
 * Los tres paradigmas trabajan juntos en Java: la pantalla en Swing está hecha con objetos (POO), los botones escuchan los clics (listeners) del usuario (Eventos) y, cuando se necesita buscar o filtrar información, se pasa la lista al enfoque Funcional para obtener el resultado sin alterar los datos originales. En cambio, el paradigma Estructurado se descarta porque no obtuvo ningún Alto en la Tabla 2; como se vio en las Tablas 1 y 2, no tiene encapsulamiento y modificar una función puede generar errores en otras partes del código.
-* 
-* \### Trazabilidad
+  
+### Trazabilidad
 * Esta decisión cumple con la restricción de diseño 3 (integrar al menos tres paradigmas) y se comprobará en la prueba de viabilidad y en el módulo funcional hecho en Java OpenJDK con Apache NetBeans, subiendo los avances con commits en GitHub.
 
