@@ -40,7 +40,12 @@ public abstract class Paciente {
     public boolean tieneDni(String otroDni) {
         return dni.equals(otroDni);
     }
-
+    
+    /** Indica si otro paciente tiene el mismo DNI, sin exponerlo. */
+    public boolean mismoDni(Paciente otro) {
+        return otro != null && this.dni.equals(otro.dni);
+    }
+    
     public abstract String getTipo();
 
     public abstract String obtenerResumen();
