@@ -8,6 +8,7 @@ import modelo.CitaDuplicadaException;
 import modelo.Paciente;
 import modelo.Atencion;
 import modelo.Tratamiento;
+import java.util.stream.Collectors;
 
 /**
  * Gestor central del policlínico (patrón Singleton): existe una única instancia
@@ -93,6 +94,13 @@ public final class GestorPoliclinico {
     public List<Cita> getCitas() {
         return List.copyOf(citas);
     }
+    
+    /** Reúne las atenciones de todos los pacientes en una sola lista de solo lectura. */
+    public List<Atencion> getAtenciones() {
+        return pacientes.stream()
+                .flatMap(p -> p.getAtenciones().stream())
+                .collect(Collectors.toList());
+}
 
     /** Borra todos los datos. Solo para uso en pruebas. */
     public void limpiarDatos() {
