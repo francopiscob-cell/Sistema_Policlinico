@@ -6,6 +6,8 @@ import java.util.List;
 import modelo.Cita;
 import modelo.CitaDuplicadaException;
 import modelo.Paciente;
+import modelo.Atencion;
+import modelo.Tratamiento;
 
 /**
  * Gestor central del policlínico (patrón Singleton): existe una única instancia
@@ -61,6 +63,16 @@ public final class GestorPoliclinico {
         citas.add(nueva);
         return nueva;
     }
+    
+    /** Registra la atención de una cita programada en la historia clínica del paciente. */
+    public Atencion registrarAtencion(Cita cita, String diagnostico, List<Tratamiento> tratamientos) {
+        if (cita == null || !citas.contains(cita)) {
+            throw new IllegalArgumentException("La cita no está programada en el policlínico.");
+        }
+        Atencion atencion = new Atencion(cita, diagnostico, tratamientos);
+        cita.getPaciente().registrarAtencion(atencion);
+        return atencion;
+}
 
     /** Verifica que no haya choque; la cita "ignorada" no se compara (caso de reprogramar). */
     private void verificarDisponibilidad(Cita nueva, Cita ignorada) throws CitaDuplicadaException {
