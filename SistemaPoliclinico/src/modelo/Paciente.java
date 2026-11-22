@@ -1,5 +1,6 @@
 package modelo;
 
+import java.util.List;
 import util.Enmascarador;
 
 /** Paciente del policlínico. Los datos sensibles nunca se exponen completos. */
@@ -7,6 +8,7 @@ public abstract class Paciente {
     private final String nombre;
     private final String dni;        // privado: no existe getter del DNI completo
     private String telefono;
+    private final HistoriaClinica historiaClinica = new HistoriaClinica();   // composición
 
     protected Paciente(String nombre, String dni, String telefono) {
         if (nombre == null || nombre.isBlank()) {
@@ -40,12 +42,28 @@ public abstract class Paciente {
     public boolean tieneDni(String otroDni) {
         return dni.equals(otroDni);
     }
-    
+
     /** Indica si otro paciente tiene el mismo DNI, sin exponerlo. */
     public boolean mismoDni(Paciente otro) {
         return otro != null && this.dni.equals(otro.dni);
     }
-    
+
+    /** Registra una atención en la historia clínica, solo si pertenece a este paciente. */
+    public void registrarAtencion(Atencion atencion) {
+        if (atencion == null) {
+            throw new IllegalArgumentException("La atención no puede ser nula.");
+        }
+        if (!mismoDni(atencion.getCita().getPaciente())) {
+            throw new IllegalArgumentException("La atención pertenece a otro paciente.");
+        }
+        historiaClinica.agregar(atencion);
+    }
+
+    /** Copia de solo lectura de las atenciones del paciente. */
+    public List<Atencion> getAtenciones() {
+        return historiaClinica.getAtenciones();
+    }
+
     public abstract String getTipo();
 
     public abstract String obtenerResumen();
