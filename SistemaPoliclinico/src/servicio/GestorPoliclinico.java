@@ -9,24 +9,35 @@ import modelo.Paciente;
 import modelo.Atencion;
 import modelo.Tratamiento;
 import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.Optional;
 
 /**
  * Gestor central del policlínico (patrón Singleton): existe una única instancia
  * que guarda los pacientes y las citas, y aplica las reglas de negocio.
  */
 public final class GestorPoliclinico {
+
     private static final GestorPoliclinico INSTANCIA = new GestorPoliclinico();
+
+    /**
+     * Médicos del policlínico (lista fija para esta versión).
+     */
+    private static final List<String> MEDICOS = List.of("Dr. Ramírez", "Dra. Salazar");
 
     private final List<Paciente> pacientes = new ArrayList<>();
     private final List<Cita> citas = new ArrayList<>();
 
-    private GestorPoliclinico() { }
+    private GestorPoliclinico() {
+    }
 
     public static GestorPoliclinico getInstancia() {
         return INSTANCIA;
     }
 
-    /** Registra un paciente nuevo; rechaza DNI repetidos. */
+    /**
+     * Registra un paciente nuevo; rechaza DNI repetidos.
+     */
     public void registrarPaciente(Paciente nuevo) {
         if (nuevo == null) {
             throw new IllegalArgumentException("El paciente no puede ser nulo.");
@@ -38,7 +49,10 @@ public final class GestorPoliclinico {
         pacientes.add(nuevo);
     }
 
-    /** Programa una cita; lanza CitaDuplicadaException si el médico ya está ocupado. */
+    /**
+     * Programa una cita; lanza CitaDuplicadaException si el médico ya está
+     * ocupado.
+     */
     public void programarCita(Cita nueva) throws CitaDuplicadaException {
         if (nueva == null) {
             throw new IllegalArgumentException("La cita no puede ser nula.");
@@ -47,12 +61,16 @@ public final class GestorPoliclinico {
         citas.add(nueva);
     }
 
-    /** Cancela una cita; devuelve true si existía. */
+    /**
+     * Cancela una cita; devuelve true si existía.
+     */
     public boolean cancelarCita(Cita cita) {
         return citas.remove(cita);
     }
 
-    /** Reprograma una cita creando una nueva con la fecha indicada. */
+    /**
+     * Reprograma una cita creando una nueva con la fecha indicada.
+     */
     public Cita reprogramarCita(Cita original, LocalDateTime nuevaFechaHora)
             throws CitaDuplicadaException {
         if (original == null || !citas.contains(original)) {
@@ -64,8 +82,11 @@ public final class GestorPoliclinico {
         citas.add(nueva);
         return nueva;
     }
-    
-    /** Registra la atención de una cita programada en la historia clínica del paciente. */
+
+    /**
+     * Registra la atención de una cita programada en la historia clínica del
+     * paciente.
+     */
     public Atencion registrarAtencion(Cita cita, String diagnostico, List<Tratamiento> tratamientos) {
         if (cita == null || !citas.contains(cita)) {
             throw new IllegalArgumentException("La cita no está programada en el policlínico.");
@@ -73,9 +94,12 @@ public final class GestorPoliclinico {
         Atencion atencion = new Atencion(cita, diagnostico, tratamientos);
         cita.getPaciente().registrarAtencion(atencion);
         return atencion;
-}
+    }
 
-    /** Verifica que no haya choque; la cita "ignorada" no se compara (caso de reprogramar). */
+    /**
+     * Verifica que no haya choque; la cita "ignorada" no se compara (caso de
+     * reprogramar).
+     */
     private void verificarDisponibilidad(Cita nueva, Cita ignorada) throws CitaDuplicadaException {
         boolean choque = citas.stream()
                 .filter(c -> c != ignorada)
@@ -86,7 +110,10 @@ public final class GestorPoliclinico {
         }
     }
 
-    /** Devuelve copias de solo lectura, para que nadie modifique las listas internas. */
+    /**
+     * Devuelve copias de solo lectura, para que nadie modifique las listas
+     * internas.
+     */
     public List<Paciente> getPacientes() {
         return List.copyOf(pacientes);
     }
@@ -94,15 +121,50 @@ public final class GestorPoliclinico {
     public List<Cita> getCitas() {
         return List.copyOf(citas);
     }
-    
-    /** Reúne las atenciones de todos los pacientes en una sola lista de solo lectura. */
+
+    /**
+     * Reúne las atenciones de todos los pacientes en una sola lista de solo
+     * lectura.
+     */
     public List<Atencion> getAtenciones() {
         return pacientes.stream()
                 .flatMap(p -> p.getAtenciones().stream())
                 .collect(Collectors.toList());
-}
 
-    /** Borra todos los datos. Solo para uso en pruebas. */
+    }
+
+    /**
+     * Busca un paciente por su DNI sin exponerlo.
+     */
+    public Optional<Paciente> buscarPacientePorDni(String dni) {
+        return pacientes.stream()
+                .filter(p -> p.tieneDni(dni))
+                .findFirst();
+    }
+
+    /**
+     * Citas de un paciente, ordenadas por fecha y hora.
+     */
+    public List<Cita> getCitasDePaciente(Paciente paciente) {
+        return citas.stream()
+                .filter(c -> c.getPaciente().mismoDni(paciente))
+                .sorted(Comparator.comparing(Cita::getFechaHora))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Médicos sin cita en la fecha y hora indicadas.
+     */
+    public List<String> getMedicosDisponibles(LocalDateTime fechaHora) {
+        return MEDICOS.stream()
+                .filter(m -> citas.stream().noneMatch(
+                        c -> c.getMedico().equalsIgnoreCase(m) && c.getFechaHora().equals(fechaHora)))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Borra todos los datos. Solo para uso en pruebas.
+     */
     public void limpiarDatos() {
         pacientes.clear();
         citas.clear();
