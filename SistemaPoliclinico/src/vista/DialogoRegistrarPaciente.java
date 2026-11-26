@@ -65,6 +65,7 @@ public class DialogoRegistrarPaciente extends javax.swing.JDialog {
         lblMensaje = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Registro Paciente");
 
         txtNombre.addActionListener(this::txtNombreActionPerformed);
 
