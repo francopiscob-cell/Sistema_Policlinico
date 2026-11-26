@@ -11,6 +11,8 @@ import modelo.Tratamiento;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 import java.util.Optional;
+import modelo.Medico;
+import modelo.TipoTratamiento;
 
 /**
  * Gestor central del policlínico (patrón Singleton): existe una única instancia
@@ -21,10 +23,11 @@ public final class GestorPoliclinico {
     private static final GestorPoliclinico INSTANCIA = new GestorPoliclinico();
 
     /**
-     * Médicos del policlínico (lista fija para esta versión).
+     * Médicos del policlínico y el servicio que atiende cada uno.
      */
-    private static final List<String> MEDICOS = List.of("Dr. Ramírez", "Dra. Salazar");
-
+    private static final List<Medico> MEDICOS = List.of(
+            new Medico("Dr. Ramírez", TipoTratamiento.CONSULTA),
+            new Medico("Dra. Salazar", TipoTratamiento.LIMPIEZA));
     private final List<Paciente> pacientes = new ArrayList<>();
     private final List<Cita> citas = new ArrayList<>();
 
@@ -155,11 +158,20 @@ public final class GestorPoliclinico {
     /**
      * Médicos sin cita en la fecha y hora indicadas.
      */
-    public List<String> getMedicosDisponibles(LocalDateTime fechaHora) {
+    public List<Medico> getMedicosDisponibles(LocalDateTime fechaHora) {
         return MEDICOS.stream()
                 .filter(m -> citas.stream().noneMatch(
-                        c -> c.getMedico().equalsIgnoreCase(m) && c.getFechaHora().equals(fechaHora)))
+                        c -> c.getMedico().equalsIgnoreCase(m.getNombre()) && c.getFechaHora().equals(fechaHora)))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Busca un médico por su nombre.
+     */
+    public Optional<Medico> buscarMedico(String nombre) {
+        return MEDICOS.stream()
+                .filter(m -> m.getNombre().equalsIgnoreCase(nombre))
+                .findFirst();
     }
 
     /**
