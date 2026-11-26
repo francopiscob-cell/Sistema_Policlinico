@@ -94,7 +94,7 @@ public class DialogoCitas extends javax.swing.JDialog {
     }
 
     private Cita citaSeleccionada() {
-        int indice = cmbCitas.getSelectedIndex();
+        int indice = cmbCitas6.getSelectedIndex();
         if (indice < 0 || indice >= citasEncontradas.size()) {
             throw new IllegalArgumentException("Primero busque las citas y elija una.");
         }
@@ -463,37 +463,13 @@ public class DialogoCitas extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarCitas;
-    private javax.swing.JButton btnCancelarCita;
-    private javax.swing.JButton btnCancelarCita1;
-    private javax.swing.JButton btnCancelarCita2;
-    private javax.swing.JButton btnCancelarCita3;
-    private javax.swing.JButton btnCancelarCita4;
-    private javax.swing.JButton btnCancelarCita5;
     private javax.swing.JButton btnCancelarCita6;
     private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnDisponibles;
     private javax.swing.JButton btnProgramar;
-    private javax.swing.JButton btnReprogramar;
-    private javax.swing.JButton btnReprogramar1;
-    private javax.swing.JButton btnReprogramar2;
-    private javax.swing.JButton btnReprogramar3;
-    private javax.swing.JButton btnReprogramar4;
-    private javax.swing.JButton btnReprogramar5;
     private javax.swing.JButton btnReprogramar6;
-    private javax.swing.JComboBox<String> cmbCitas;
-    private javax.swing.JComboBox<String> cmbCitas1;
-    private javax.swing.JComboBox<String> cmbCitas2;
-    private javax.swing.JComboBox<String> cmbCitas3;
-    private javax.swing.JComboBox<String> cmbCitas4;
-    private javax.swing.JComboBox<String> cmbCitas5;
     private javax.swing.JComboBox<String> cmbCitas6;
     private javax.swing.JComboBox<String> cmbMedico;
-    private javax.swing.JLabel lblCita;
-    private javax.swing.JLabel lblCita1;
-    private javax.swing.JLabel lblCita2;
-    private javax.swing.JLabel lblCita3;
-    private javax.swing.JLabel lblCita4;
-    private javax.swing.JLabel lblCita5;
     private javax.swing.JLabel lblCita6;
     private javax.swing.JLabel lblDni;
     private javax.swing.JLabel lblFecha;
@@ -502,12 +478,6 @@ public class DialogoCitas extends javax.swing.JDialog {
     private javax.swing.JLabel lblMensaje;
     private javax.swing.JPanel pnlCitas;
     private javax.swing.JPanel pnlProgramar;
-    private javax.swing.JPanel pnlReprogramar;
-    private javax.swing.JPanel pnlReprogramar1;
-    private javax.swing.JPanel pnlReprogramar2;
-    private javax.swing.JPanel pnlReprogramar3;
-    private javax.swing.JPanel pnlReprogramar4;
-    private javax.swing.JPanel pnlReprogramar5;
     private javax.swing.JPanel pnlReprogramar6;
     private javax.swing.JPasswordField pwdDni;
     private javax.swing.JTextField txtFecha;
