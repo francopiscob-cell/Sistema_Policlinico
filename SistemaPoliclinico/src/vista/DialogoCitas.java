@@ -13,6 +13,10 @@ import modelo.Cita;
 import modelo.CitaDuplicadaException;
 import modelo.Paciente;
 import servicio.GestorPoliclinico;
+import modelo.Atencion;
+import modelo.Medico;
+import modelo.Tratamiento;
+import modelo.TratamientoFactory;
 
 /**
  *
@@ -29,6 +33,7 @@ public class DialogoCitas extends javax.swing.JDialog {
 
     private final GestorPoliclinico gestor = GestorPoliclinico.getInstancia();
     private List<Cita> citasEncontradas = List.of();
+    private List<Medico> medicosDisponibles = List.of();
 
     /**
      * Creates new form DialogoCitas
@@ -123,7 +128,6 @@ public class DialogoCitas extends javax.swing.JDialog {
         lblMedico = new javax.swing.JLabel();
         cmbMedico = new javax.swing.JComboBox<>();
         btnProgramar = new javax.swing.JButton();
-        lblMensaje = new javax.swing.JLabel();
         txtMensaje = new javax.swing.JTextField();
         btnCerrar = new javax.swing.JButton();
         pnlReprogramar6 = new javax.swing.JPanel();
@@ -131,6 +135,9 @@ public class DialogoCitas extends javax.swing.JDialog {
         cmbCitas6 = new javax.swing.JComboBox<>();
         btnReprogramar6 = new javax.swing.JButton();
         btnCancelarCita6 = new javax.swing.JButton();
+        lblDiagnostico = new javax.swing.JLabel();
+        txtDiagnostico = new javax.swing.JTextField();
+        btnAtencion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gestión de citas");
@@ -242,12 +249,11 @@ public class DialogoCitas extends javax.swing.JDialog {
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        lblMensaje.setText("Mensaje:");
-
         btnCerrar.setText("Cerrar");
         btnCerrar.addActionListener(this::btnCerrarActionPerformed);
 
-        pnlReprogramar6.setBorder(javax.swing.BorderFactory.createTitledBorder("3. Reprogramar o cancelar"));
+        pnlReprogramar6.setBorder(javax.swing.BorderFactory.createTitledBorder("3. Reprogramar, cancelar o atender"));
+        pnlReprogramar6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         pnlReprogramar6.setPreferredSize(new java.awt.Dimension(450, 132));
 
         lblCita6.setText("Cita:");
@@ -261,27 +267,39 @@ public class DialogoCitas extends javax.swing.JDialog {
         btnCancelarCita6.setText("Cancelar cita");
         btnCancelarCita6.addActionListener(this::btnCancelarCita6ActionPerformed);
 
+        lblDiagnostico.setText("Diagnóstico:");
+
+        btnAtencion.setText("Registrar Atención");
+        btnAtencion.addActionListener(this::btnAtencionActionPerformed);
+
         javax.swing.GroupLayout pnlReprogramar6Layout = new javax.swing.GroupLayout(pnlReprogramar6);
         pnlReprogramar6.setLayout(pnlReprogramar6Layout);
         pnlReprogramar6Layout.setHorizontalGroup(
             pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlReprogramar6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtDiagnostico)
                     .addGroup(pnlReprogramar6Layout.createSequentialGroup()
-                        .addComponent(lblCita6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cmbCitas6, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlReprogramar6Layout.createSequentialGroup()
-                        .addComponent(btnReprogramar6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancelarCita6)))
-                .addContainerGap(48, Short.MAX_VALUE))
+                        .addGroup(pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(pnlReprogramar6Layout.createSequentialGroup()
+                                    .addComponent(lblCita6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(cmbCitas6, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(pnlReprogramar6Layout.createSequentialGroup()
+                                    .addComponent(btnReprogramar6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnCancelarCita6)))
+                            .addComponent(lblDiagnostico)
+                            .addComponent(btnAtencion))
+                        .addGap(0, 42, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         pnlReprogramar6Layout.setVerticalGroup(
             pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlReprogramar6Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(12, 12, 12)
                 .addGroup(pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCita6)
                     .addComponent(cmbCitas6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -289,7 +307,13 @@ public class DialogoCitas extends javax.swing.JDialog {
                 .addGroup(pnlReprogramar6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReprogramar6)
                     .addComponent(btnCancelarCita6))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblDiagnostico)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtDiagnostico, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnAtencion)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -301,33 +325,29 @@ public class DialogoCitas extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnCerrar)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(6, 6, 6)
-                            .addComponent(lblMensaje)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(txtMensaje))
                         .addComponent(pnlCitas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(pnlProgramar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pnlReprogramar6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(pnlReprogramar6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtMensaje, javax.swing.GroupLayout.Alignment.TRAILING)))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pnlCitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(pnlReprogramar6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblMensaje)
-                    .addComponent(txtMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(pnlReprogramar6, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCerrar)
                 .addGap(15, 15, 15))
         );
+
+        pnlReprogramar6.getAccessibleContext().setAccessibleName("3. Reprogramar, cancelar o atender");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -342,12 +362,15 @@ public class DialogoCitas extends javax.swing.JDialog {
 
     private void btnDisponiblesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisponiblesActionPerformed
         try {
-            List<String> libres = gestor.getMedicosDisponibles(leerFechaHora());
-            cmbMedico.setModel(new DefaultComboBoxModel<>(libres.toArray(new String[0])));
-            if (libres.isEmpty()) {
+            medicosDisponibles = gestor.getMedicosDisponibles(leerFechaHora());
+            String[] textos = medicosDisponibles.stream()
+                    .map(Medico::toString)
+                    .toArray(String[]::new);
+            cmbMedico.setModel(new DefaultComboBoxModel<>(textos));
+            if (medicosDisponibles.isEmpty()) {
                 mostrarError("No hay médicos disponibles en ese horario.");
             } else {
-                mostrarExito("Médicos disponibles: " + libres.size() + ". Elija uno de la lista.");
+                mostrarExito("Médicos disponibles: " + medicosDisponibles.size() + ". Elija uno de la lista.");
             }
         } catch (IllegalArgumentException e) {
             mostrarError(e.getMessage());
@@ -356,11 +379,17 @@ public class DialogoCitas extends javax.swing.JDialog {
 
     private void btnReprogramar6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReprogramar6ActionPerformed
         try {
-            Cita original = citaSeleccionada();
-            LocalDateTime nuevaFechaHora = leerFechaHora();
-            gestor.reprogramarCita(original, nuevaFechaHora);
-            mostrarCitasDe(original.getPaciente());
-            mostrarExito("Cita reprogramada.");
+            Paciente paciente = leerPaciente();
+            LocalDateTime fechaHora = leerFechaHora();
+            int indice = cmbMedico.getSelectedIndex();
+            if (indice < 0 || indice >= medicosDisponibles.size()) {
+                throw new IllegalArgumentException("Primero busque los médicos disponibles y elija uno.");
+            }
+            Medico medico = medicosDisponibles.get(indice);
+            gestor.programarCita(new Cita(medico.getNombre(), paciente, fechaHora));
+            mostrarCitasDe(paciente);
+            mostrarExito("Cita de " + medico.getEspecialidad().getNombre()
+                    + " programada para " + paciente.getNombre() + ".");
         } catch (CitaDuplicadaException | IllegalArgumentException e) {
             mostrarError(e.getMessage());
         }
@@ -370,13 +399,15 @@ public class DialogoCitas extends javax.swing.JDialog {
         try {
             Paciente paciente = leerPaciente();
             LocalDateTime fechaHora = leerFechaHora();
-            String medico = (String) cmbMedico.getSelectedItem();
-            if (medico == null) {
+            int indice = cmbMedico.getSelectedIndex();
+            if (indice < 0 || indice >= medicosDisponibles.size()) {
                 throw new IllegalArgumentException("Primero busque los médicos disponibles y elija uno.");
             }
-            gestor.programarCita(new Cita(medico, paciente, fechaHora));
+            Medico medico = medicosDisponibles.get(indice);
+            gestor.programarCita(new Cita(medico.getNombre(), paciente, fechaHora));
             mostrarCitasDe(paciente);
-            mostrarExito("Cita programada para " + paciente.getNombre() + ".");
+            mostrarExito("Cita de " + medico.getEspecialidad().getNombre()
+                    + " programada para " + paciente.getNombre() + ".");
         } catch (CitaDuplicadaException | IllegalArgumentException e) {
             mostrarError(e.getMessage());
         }
@@ -424,6 +455,25 @@ public class DialogoCitas extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbCitas6ActionPerformed
 
+    private void btnAtencionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtencionActionPerformed
+        try {
+            Cita cita = citaSeleccionada();
+            String diagnostico = txtDiagnostico.getText().trim();
+
+            // El tratamiento sale de la especialidad del médico, mediante el Factory.
+            Medico medico = gestor.buscarMedico(cita.getMedico())
+                    .orElseThrow(() -> new IllegalArgumentException("El médico de la cita no está registrado."));
+            Tratamiento tratamiento = TratamientoFactory.crear(medico.getEspecialidad());
+
+            Atencion atencion = gestor.registrarAtencion(cita, diagnostico, List.of(tratamiento));
+            txtDiagnostico.setText("");
+            mostrarExito("Atención registrada: " + tratamiento.getNombre()
+                    + " - S/ " + String.format("%.2f", atencion.getCostoTotal()));
+        } catch (IllegalArgumentException e) {
+            mostrarError(e.getMessage());
+        }
+    }//GEN-LAST:event_btnAtencionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -462,6 +512,7 @@ public class DialogoCitas extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtencion;
     private javax.swing.JButton btnBuscarCitas;
     private javax.swing.JButton btnCancelarCita6;
     private javax.swing.JButton btnCerrar;
@@ -471,15 +522,16 @@ public class DialogoCitas extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cmbCitas6;
     private javax.swing.JComboBox<String> cmbMedico;
     private javax.swing.JLabel lblCita6;
+    private javax.swing.JLabel lblDiagnostico;
     private javax.swing.JLabel lblDni;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblHora;
     private javax.swing.JLabel lblMedico;
-    private javax.swing.JLabel lblMensaje;
     private javax.swing.JPanel pnlCitas;
     private javax.swing.JPanel pnlProgramar;
     private javax.swing.JPanel pnlReprogramar6;
     private javax.swing.JPasswordField pwdDni;
+    private javax.swing.JTextField txtDiagnostico;
     private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtHora;
     private javax.swing.JTextField txtMensaje;
