@@ -1,7 +1,20 @@
 package modelo;
 
-/** Tipos de tratamiento que ofrece el policlínico. */
+/**
+ * Tipos de tratamiento que ofrece el policlínico.
+ */
 public enum TipoTratamiento {
-    CONSULTA,
-    LIMPIEZA
+    CONSULTA("Consulta general"),
+    LIMPIEZA("Limpieza dental");
+
+    private final String nombre;
+
+    TipoTratamiento(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
 }
