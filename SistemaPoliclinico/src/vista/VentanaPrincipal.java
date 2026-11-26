@@ -111,7 +111,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroActionPerformed
-        // TODO add your handling code here:
+        new DialogoRegistro(this, true).setVisible(true);
     }//GEN-LAST:event_btnRegistroActionPerformed
 
     /**
