@@ -65,9 +65,13 @@ public final class GestorPoliclinico {
     }
 
     /**
-     * Cancela una cita; devuelve true si existía.
+     * Cancela una cita; devuelve true si existía. No permite cancelar una cita
+     * ya atendida.
      */
     public boolean cancelarCita(Cita cita) {
+        if (cita != null && estaAtendida(cita)) {
+            throw new IllegalArgumentException("No se puede cancelar una cita que ya fue atendida.");
+        }
         return citas.remove(cita);
     }
 
@@ -78,6 +82,9 @@ public final class GestorPoliclinico {
             throws CitaDuplicadaException {
         if (original == null || !citas.contains(original)) {
             throw new IllegalArgumentException("La cita a reprogramar no existe.");
+        }
+        if (estaAtendida(original)) {
+            throw new IllegalArgumentException("No se puede reprogramar una cita que ya fue atendida.");
         }
         Cita nueva = new Cita(original.getMedico(), original.getPaciente(), nuevaFechaHora);
         verificarDisponibilidad(nueva, original);
@@ -97,6 +104,14 @@ public final class GestorPoliclinico {
         Atencion atencion = new Atencion(cita, diagnostico, tratamientos);
         cita.getPaciente().registrarAtencion(atencion);
         return atencion;
+    }
+
+    /**
+     * Indica si la cita ya tiene su atención registrada en la historia clínica.
+     */
+    public boolean estaAtendida(Cita cita) {
+        return cita.getPaciente().getAtenciones().stream()
+                .anyMatch(a -> a.getCita() == cita);
     }
 
     /**

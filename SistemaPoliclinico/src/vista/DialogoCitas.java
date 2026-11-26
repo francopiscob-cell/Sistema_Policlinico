@@ -379,17 +379,14 @@ public class DialogoCitas extends javax.swing.JDialog {
 
     private void btnReprogramar6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReprogramar6ActionPerformed
         try {
-            Paciente paciente = leerPaciente();
-            LocalDateTime fechaHora = leerFechaHora();
-            int indice = cmbMedico.getSelectedIndex();
-            if (indice < 0 || indice >= medicosDisponibles.size()) {
-                throw new IllegalArgumentException("Primero busque los médicos disponibles y elija uno.");
+            Cita original = citaSeleccionada();
+            if (gestor.estaAtendida(original)) {
+                throw new IllegalArgumentException("No se puede reprogramar una cita que ya fue atendida.");
             }
-            Medico medico = medicosDisponibles.get(indice);
-            gestor.programarCita(new Cita(medico.getNombre(), paciente, fechaHora));
-            mostrarCitasDe(paciente);
-            mostrarExito("Cita de " + medico.getEspecialidad().getNombre()
-                    + " programada para " + paciente.getNombre() + ".");
+            LocalDateTime nuevaFechaHora = leerFechaHora();
+            gestor.reprogramarCita(original, nuevaFechaHora);
+            mostrarCitasDe(original.getPaciente());
+            mostrarExito("Cita reprogramada.");
         } catch (CitaDuplicadaException | IllegalArgumentException e) {
             mostrarError(e.getMessage());
         }
@@ -416,6 +413,9 @@ public class DialogoCitas extends javax.swing.JDialog {
     private void btnCancelarCita6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCita6ActionPerformed
         try {
             Cita cita = citaSeleccionada();
+            if (gestor.estaAtendida(cita)) {
+                throw new IllegalArgumentException("No se puede cancelar una cita que ya fue atendida.");
+            }
             int opcion = JOptionPane.showConfirmDialog(this,
                     "¿Cancelar esta cita?\n" + cita, "Confirmar", JOptionPane.YES_NO_OPTION);
             if (opcion != JOptionPane.YES_OPTION) {
